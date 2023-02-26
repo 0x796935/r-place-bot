@@ -5,3 +5,7 @@
 
 # Ignore idea files
 .idea
+
+# Ignore runtime generated files
+*.log
+*.db

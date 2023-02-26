@@ -47,7 +47,7 @@ module.exports = {
         const pixelColor = interaction.options.getString('color');
         console.log(`Setting pixel at ${pixelX}, ${pixelY} to ${pixelColor}`)
 
-        const canvas = getCanvas(interaction.guildId);
+        const canvas = await getCanvas(interaction.guildId);
         const buffer = canvas.fillRectangle(pixelX, pixelY, pixelColor)
         const canvasSize = canvas.getCanvasSize();
         console.log(`Canvas size: ${canvasSize}`)
