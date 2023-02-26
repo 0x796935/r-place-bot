@@ -7,7 +7,7 @@ module.exports = {
     .setName('help')
     .setDescription('Shows the help menu.'),
   async execute(interaction: CommandInteraction) {
-    // List all the commands in a embed
+    // List all the commands in an embed
 
     const embed = new EmbedBuilder()
       .setTitle('Help Menu')
