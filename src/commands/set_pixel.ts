@@ -1,7 +1,7 @@
 import { SlashCommandBuilder, EmbedBuilder, RGBTuple } from '@discordjs/builders';
 import { CommandInteraction } from 'discord.js';
 // @ts-ignore
-import { fillRectangle, getCanvasInfo }  from '../utils/canvas';
+import { getCanvas }  from '../utils/canvas';
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -47,10 +47,9 @@ module.exports = {
         const pixelColor = interaction.options.getString('color');
         console.log(`Setting pixel at ${pixelX}, ${pixelY} to ${pixelColor}`)
 
-        const buffer = fillRectangle(pixelX, pixelY, pixelColor)
-
-
-        const canvasSize = getCanvasInfo();
+        const canvas = getCanvas(interaction.guildId);
+        const buffer = canvas.fillRectangle(pixelX, pixelY, pixelColor)
+        const canvasSize = canvas.getCanvasSize();
         console.log(`Canvas size: ${canvasSize}`)
 
         if (pixelX > canvasSize)
