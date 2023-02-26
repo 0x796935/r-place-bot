@@ -1,7 +1,7 @@
-import { SlashCommandBuilder, EmbedBuilder, RGBTuple } from '@discordjs/builders';
-import { CommandInteraction } from 'discord.js';
+import {SlashCommandBuilder, EmbedBuilder, RGBTuple} from '@discordjs/builders';
+import {CommandInteraction} from 'discord.js';
 // @ts-ignore
-import { getCanvas }  from '../utils/canvas';
+import {getCanvas} from '../utils/canvas';
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -16,6 +16,6 @@ module.exports = {
             .setTitle('Canvas for current guild:')
             .setImage('attachment://canvas.png')
 
-        return await interaction.reply({ embeds: [embed], files: [{ name: 'canvas.png', attachment: buffer }] });
+        return await interaction.reply({embeds: [embed], files: [{name: 'canvas.png', attachment: buffer}]});
     }
 }

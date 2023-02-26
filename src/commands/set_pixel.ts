@@ -1,7 +1,7 @@
-import { SlashCommandBuilder, EmbedBuilder, RGBTuple } from '@discordjs/builders';
-import { CommandInteraction } from 'discord.js';
+import {SlashCommandBuilder, EmbedBuilder, RGBTuple} from '@discordjs/builders';
+import {CommandInteraction} from 'discord.js';
 // @ts-ignore
-import { getCanvas }  from '../utils/canvas';
+import {getCanvas} from '../utils/canvas';
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -10,18 +10,17 @@ module.exports = {
         .addIntegerOption(option => option.setName('x').setDescription('The x coordinate of the pixel.').setRequired(true))
         .addIntegerOption(option => option.setName('y').setDescription('The y coordinate of the pixel.').setRequired(true))
         .addStringOption(option => option.setName('color').setDescription('The color of the pixel.').setRequired(true).addChoices(
-            { name: 'Red', value: 'red' },
-            { name: 'Green', value: 'green' },
-            { name: 'Blue', value: 'blue' },
-            { name: 'Yellow', value: 'yellow' },
-            { name: 'Cyan', value: 'cyan' },
-            { name: 'Magenta', value: 'magenta' },
-            { name: 'White', value: 'white' },
-            { name: 'Black', value: 'black' },
-            { name: 'Gray', value: 'gray' },
-            { name: 'Brown', value: 'brown' },
+            {name: 'Red', value: 'red'},
+            {name: 'Green', value: 'green'},
+            {name: 'Blue', value: 'blue'},
+            {name: 'Yellow', value: 'yellow'},
+            {name: 'Cyan', value: 'cyan'},
+            {name: 'Magenta', value: 'magenta'},
+            {name: 'White', value: 'white'},
+            {name: 'Black', value: 'black'},
+            {name: 'Gray', value: 'gray'},
+            {name: 'Brown', value: 'brown'},
         )),
-
 
 
     // Give me 10 colors:
@@ -53,15 +52,21 @@ module.exports = {
         console.log(`Canvas size: ${canvasSize}`)
 
         if (pixelX > canvasSize)
-            return await interaction.reply({ content: `The x coordinate must be between 1 and ${canvasSize}`, ephemeral: true });
+            return await interaction.reply({
+                content: `The x coordinate must be between 1 and ${canvasSize}`,
+                ephemeral: true
+            });
         if (pixelY > canvasSize)
-            return await interaction.reply({ content: `The y coordinate must be between 1 and ${canvasSize}`, ephemeral: true });
+            return await interaction.reply({
+                content: `The y coordinate must be between 1 and ${canvasSize}`,
+                ephemeral: true
+            });
 
         const embed = new EmbedBuilder()
             .setTitle('Pixel set!')
             .setDescription(`Set pixel at ${pixelX}, ${pixelY} to ${pixelColor}`)
             .setImage('attachment://canvas.png')
 
-        return await interaction.reply({ embeds: [embed], files: [{ name: 'canvas.png', attachment: buffer }] });
+        return await interaction.reply({embeds: [embed], files: [{name: 'canvas.png', attachment: buffer}]});
     }
 }

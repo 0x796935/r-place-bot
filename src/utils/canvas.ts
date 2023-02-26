@@ -3,6 +3,8 @@ import {Canvas, CanvasRenderingContext2D, createCanvas} from 'canvas'; // sudo p
 import fs from 'fs';
 // @ts-ignore
 import sqlite from 'sqlite3';
+import GIFEncoder from 'gifencoder';
+import { createWriteStream } from 'fs';
 
 class CustomDatabase{
     private readonly db: sqlite.Database;
@@ -86,6 +88,7 @@ class CustomCanvasBuilder {
     private readonly separatorSize: number;
     private readonly backgroundColor: string;
     private readonly separatorColor: string;
+    private readonly finalCanvasSize: number;
     private readonly guildID: string;
     private canvas: Canvas;
     private ctx: CanvasRenderingContext2D;
@@ -106,35 +109,41 @@ class CustomCanvasBuilder {
         this.separatorColor = separatorColor;
         this.guildID = guildID;
 
-        const finalCanvasSize = (this.singlePixelSize * this.canvasSize) + (this.separatorSize * this.canvasSize) + this.separatorSize
+        this.finalCanvasSize = (this.singlePixelSize * this.canvasSize) + (this.separatorSize * this.canvasSize) + this.separatorSize
 
-        this.canvas = createCanvas(finalCanvasSize, finalCanvasSize);
-        this.ctx = this.canvas.getContext('2d')
+        const { canvas, ctx } = this.initCanvas();
+        this.canvas = canvas;
+        this.ctx = ctx;
+    }
 
-        this.ctx.fillStyle = this.separatorColor;
+    private initCanvas(){
+        const canvas = createCanvas(this.finalCanvasSize, this.finalCanvasSize);
+        const ctx = canvas.getContext('2d')
+
+        ctx.fillStyle = this.separatorColor;
 
         for (let i = 0; i < this.canvasSize+1; i++) {
             // Horizontal lines
-            this.ctx.fillRect(0, (singlePixelSize * i) + (separatorSize * i), this.canvas.width, separatorSize)
+            ctx.fillRect(0, (this.singlePixelSize * i) + (this.separatorSize * i), canvas.width, this.separatorSize)
             // Vertical lines
-            this.ctx.fillRect((singlePixelSize * i) + (separatorSize * i), 0, separatorSize, this.canvas.height)
+            ctx.fillRect((this.singlePixelSize * i) + (this.separatorSize * i), 0, this.separatorSize, canvas.height)
         }
 
         const horizontalOffset = {
             x: 0,
-            y: singlePixelSize / 5
+            y: this.singlePixelSize / 5
         }
 
         const verticalOffset = {
-            x: singlePixelSize / 2,
+            x: this.singlePixelSize / 2,
             y: -20
         }
 
         // Set font size
-        this.ctx.font = `${this.singlePixelSize/2}px Arial`;
-        this.ctx.fillStyle = '#F00';
+        ctx.font = `${this.singlePixelSize/2}px Arial`;
+        ctx.fillStyle = '#F00';
 
-        for (let i = 1; i < canvasSize; i++) {
+        for (let i = 1; i < this.canvasSize; i++) {
             const coordIndex = i;
             if (i == 10) {
                 verticalOffset.x += 10
@@ -142,10 +151,11 @@ class CustomCanvasBuilder {
             }
 
             // Horizontal Numeration
-            this.ctx.fillText(`${i}`, ((singlePixelSize * coordIndex) + (separatorSize * coordIndex) + (singlePixelSize / 2)) - horizontalOffset.x,  singlePixelSize - horizontalOffset.y)
+            ctx.fillText(`${i}`, ((this.singlePixelSize * coordIndex) + (this.separatorSize * coordIndex) + (this.singlePixelSize / 2)) - horizontalOffset.x,  this.singlePixelSize - horizontalOffset.y)
             // Vertical Numeration
-            this.ctx.fillText(`${i}`, singlePixelSize - verticalOffset.x, ((singlePixelSize * coordIndex) + (separatorSize * coordIndex) + (singlePixelSize / 2) - verticalOffset.y))
+            ctx.fillText(`${i}`, this.singlePixelSize - verticalOffset.x, ((this.singlePixelSize * coordIndex) + (this.separatorSize * coordIndex) + (this.singlePixelSize / 2) - verticalOffset.y))
         }
+        return {canvas: canvas, ctx: ctx}
     }
 
     public fillRectangle(x: number, y: number, color: string) {
@@ -186,6 +196,30 @@ class CustomCanvasBuilder {
 
     public getCanvasBuffer(){
         return this.canvas.toBuffer('image/png');
+    }
+
+    public async getCanvasAnimationBuffer(){
+        // Get all pixels placements from database
+        const pixels = await database.getGuildPixels(this.guildID);
+        const { canvas, ctx } = this.initCanvas();
+        // create array of CanvasRenderingContext2D objects
+        const animationFrames = [] as CanvasRenderingContext2D[];
+        if(pixels){
+            for (let i = 0; i < pixels.length; i++) {
+                ctx.fillStyle = pixels[i].color;
+                const x = pixels[i].x;
+                const y = pixels[i].y;
+                ctx.fillRect((this.singlePixelSize * x) + (this.separatorSize * x) + this.separatorSize, (this.singlePixelSize * y) + (this.separatorSize * y) + this.separatorSize, this.singlePixelSize, this.singlePixelSize)
+                animationFrames.push(ctx);
+            }
+
+            //TODO create gif @Trip do your bizwizardry here!!
+            // hello
+            // hey uwu
+            no u
+            // can you push to git 
+            return null;
+        }
     }
 }
 

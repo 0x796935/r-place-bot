@@ -8,4 +8,5 @@
 * Send canvas to user
 * Make bot sexy
 * Uhh other shit
-
++ We gotta add like yk a thingy 
++ A setupy thingy which does the color and size and stuff

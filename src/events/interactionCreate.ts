@@ -11,6 +11,7 @@ export default async function (interaction: Interaction) {
     await command.execute(interaction);
   } catch (error) {
     console.error(error);
-    await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+    if(interaction.replied) return interaction.fetchReply().then(interaction => interaction.edit({content: 'There was an error while executing this command!', embeds: []}));
+    await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true, embeds: [] });
   }
 }

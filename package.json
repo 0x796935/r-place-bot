@@ -16,8 +16,13 @@
 	"license": "ISC",
 	"dependencies": {
 		"canvas": "^2.11.0",
+		"canvas-gif": "^1.0.3",
 		"discord.js": "^14.7.1",
 		"dotenv": "^16.0.3",
+		"gifencoder": "^2.0.1",
 		"sqlite3": "^5.1.4"
+	},
+	"devDependencies": {
+		"@types/gifencoder": "^2.0.1"
 	}
 }
