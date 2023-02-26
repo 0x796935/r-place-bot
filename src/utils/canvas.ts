@@ -25,7 +25,7 @@ class CustomDatabase{
     }
 
     public addGuild(guildId: string, canvasSize: number, singlePixelSize: number, separatorSize: number, backgroundColor: string, separatorColor: string) {
-        this.db.run('INSERT INTO guilds (id, canvas_size, single_pixel_size, separator_size, background_color, separator_color) VALUES (?, ?, ?, ?, ?, ?)', [guildId, canvasSize, singlePixelSize, separatorSize, backgroundColor, separatorColor]);
+        this.db.run('INSERT or IGNORE INTO guilds (id, canvas_size, single_pixel_size, separator_size, background_color, separator_color) VALUES (?, ?, ?, ?, ?, ?)', [guildId, canvasSize, singlePixelSize, separatorSize, backgroundColor, separatorColor]);
         console.log(`Added guild ${guildId} to database`);
     }
 
