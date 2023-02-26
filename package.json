@@ -1,0 +1,21 @@
+{
+	"name": "r-place-bot",
+	"version": "0.1.0",
+	"description": "",
+	"main": "index.ts",
+	"scripts": {
+		"dev": "ts-node-dev --respawn --transpile-only src/index.ts",
+		"prod": "ts-node src/index.ts"
+	},
+	"keywords": [
+		"discord",
+		"bot",
+		"typescript"
+	],
+	"author": "yi5/lagknowswhy",
+	"license": "ISC",
+	"dependencies": {
+		"discord.js": "^14.7.1",
+		"dotenv": "^16.0.3"
+	}
+}
