@@ -9,6 +9,7 @@ module.exports = {
         .setDescription('Gets the canvas for the current guild.'),
 
     async execute(interaction: CommandInteraction) {
+        await interaction.reply('Getting canvas...')
         const canvas = await getCanvas(interaction.guildId);
         const buffer = canvas.getCanvasBuffer();
 
@@ -16,6 +17,10 @@ module.exports = {
             .setTitle('Canvas for current guild:')
             .setImage('attachment://canvas.png')
 
-        return await interaction.reply({embeds: [embed], files: [{name: 'canvas.png', attachment: buffer}]});
+        return await interaction.editReply({
+            embeds: [embed],
+            files: [{name: 'canvas.png', attachment: buffer}],
+            content: ''
+        });
     }
 }

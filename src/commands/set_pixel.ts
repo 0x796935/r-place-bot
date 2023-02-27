@@ -1,4 +1,4 @@
-import {SlashCommandBuilder, EmbedBuilder } from '@discordjs/builders';
+import {SlashCommandBuilder, EmbedBuilder} from '@discordjs/builders';
 import {ActionRowBuilder, ButtonBuilder, CommandInteraction, ButtonStyle} from 'discord.js';
 // @ts-ignore
 import {getCanvas} from '../utils/canvas';

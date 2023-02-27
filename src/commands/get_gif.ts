@@ -1,7 +1,7 @@
 import {SlashCommandBuilder, EmbedBuilder, RGBTuple} from '@discordjs/builders';
 import {CommandInteraction} from 'discord.js';
 // @ts-ignore
-import { getCanvas } from '../utils/canvas';
+import {getCanvas} from '../utils/canvas';
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -20,13 +20,14 @@ module.exports = {
 
         const interactionReply = await interaction.fetchReply()
         return await interactionReply.edit({
-                embeds: [embed],
-                files: [
-                    {
-                        name: 'canvas.gif',
-                        attachment: buffer
-                    }
-                    ]
-            })
+            embeds: [embed],
+            content: '',
+            files: [
+                {
+                    name: 'canvas.gif',
+                    attachment: buffer
+                }
+            ]
+        })
     }
 }
