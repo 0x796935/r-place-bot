@@ -3,8 +3,8 @@ import {Canvas, CanvasRenderingContext2D, createCanvas} from 'canvas'; // sudo p
 import fs from 'fs';
 // @ts-ignore
 import sqlite from 'sqlite3';
+// @ts-ignore
 import GIFEncoder from 'gifencoder';
-import { createWriteStream } from 'fs';
 
 class CustomDatabase{
     private readonly db: sqlite.Database;
@@ -158,6 +158,26 @@ class CustomCanvasBuilder {
         return {canvas: canvas, ctx: ctx}
     }
 
+    public gifFillRectangle(x: number, y: number, color: string) {
+        const canvas = this.canvas;
+        const ctx = this.ctx;
+        const gif = new GIFEncoder(this.finalCanvasSize, this.finalCanvasSize);
+
+        gif.start();
+        gif.setRepeat(0);
+        gif.setDelay(500);
+        gif.setQuality(10);
+
+        // @ts-ignore
+        gif.addFrame(canvas.getContext('2d'))
+        ctx.fillStyle = color;
+        ctx.fillRect((this.singlePixelSize * x) + (this.separatorSize * x) + this.separatorSize, (this.singlePixelSize * y) + (this.separatorSize * y) + this.separatorSize, this.singlePixelSize, this.singlePixelSize)
+        // @ts-ignore
+        gif.addFrame(canvas.getContext('2d'))
+        gif.finish();
+        return gif.out.getData();
+    }
+
     public fillRectangle(x: number, y: number, color: string) {
         try{
             database.addGuildPixel(this.guildID, x, y, color);
@@ -202,23 +222,25 @@ class CustomCanvasBuilder {
         // Get all pixels placements from database
         const pixels = await database.getGuildPixels(this.guildID);
         const { canvas, ctx } = this.initCanvas();
-        // create array of CanvasRenderingContext2D objects
-        const animationFrames = [] as CanvasRenderingContext2D[];
+
+
         if(pixels){
+            const gif = new GIFEncoder(this.finalCanvasSize, this.finalCanvasSize);
+            gif.start();
+            gif.setRepeat(0);
+            gif.setDelay(250);
+            gif.setQuality(10);
+
             for (let i = 0; i < pixels.length; i++) {
                 ctx.fillStyle = pixels[i].color;
                 const x = pixels[i].x;
                 const y = pixels[i].y;
                 ctx.fillRect((this.singlePixelSize * x) + (this.separatorSize * x) + this.separatorSize, (this.singlePixelSize * y) + (this.separatorSize * y) + this.separatorSize, this.singlePixelSize, this.singlePixelSize)
-                animationFrames.push(ctx);
+                // @ts-ignore
+                gif.addFrame(canvas.getContext('2d'));
             }
-
-            //TODO create gif @Trip do your bizwizardry here!!
-            // hello
-            // hey uwu
-            no u
-            // can you push to git 
-            return null;
+            gif.finish();
+            return gif.out.getData();
         }
     }
 }
@@ -229,7 +251,7 @@ const database = new CustomDatabase();
 async function getCanvas(serverID: any){
     console.log('Getting canvas for server: ' + serverID)
     if (canvasArray[serverID] == undefined) {
-        canvasArray[serverID] = await new CustomCanvasBuilder(16, 64, 8, '#000000', '#444444', serverID)
+        canvasArray[serverID] = await new CustomCanvasBuilder(16, 64, 6, '#000000', '#222', serverID)
     }
 
     await canvasArray[serverID].loadGuildPixels();

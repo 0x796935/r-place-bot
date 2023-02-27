@@ -2,6 +2,7 @@ import { Collection, REST } from 'discord.js';
 import { Client as DiscordClient, Collection as DiscordCollection, Routes as DiscordRoutes } from 'discord.js';
 
 import Command from './command';
+import Button from './button';
 import { join } from "path";
 import { readdirSync } from "fs";
 import { config } from 'dotenv';
@@ -9,6 +10,7 @@ import { config } from 'dotenv';
 export default class ClientClass extends DiscordClient {
   commands: Collection<string, Command>;
   events: Collection<string, Event>;
+    buttons: Collection<string, Button>;
 
   constructor(intents: { intents: any[] }) {
     super({ // defining the client with the intents
@@ -17,13 +19,17 @@ export default class ClientClass extends DiscordClient {
 
     this.commands = new DiscordCollection();
     this.events = new DiscordCollection();
+    this.buttons = new DiscordCollection();
 
     // Create a table in the console for the Events
     console.log('\x1b[36m%s\x1b[0m', 'Registering Events: ---------------------');
     this.registerEvents();
     console.log('\x1b[34m%s\x1b[0m', 'Registering Commands: -------------------');
     this.registerCommands();
+    console.log('\x1b[32m%s\x1b[0m', 'Registering Buttons: --------------------');
+    this.registerButtons();
     console.log('\x1b[32m%s\x1b[0m', '-----------------------------------------');
+
 
     config(); // load .env file
     const TOKEN: string = process.env.TOKEN ?? '';
@@ -74,6 +80,24 @@ export default class ClientClass extends DiscordClient {
       this.commands.set(loadedCommand.data.name, loadedCommand);
       console.log('\x1b[34m%s\x1b[0m', `- ${loadedCommand.data.name}`);
 
+    }
+  }
+
+  async registerButtons(): Promise<void> {
+    ///
+    /// Registering the buttons
+    ///
+    const buttonsPath = join(__dirname, '..', 'buttons');
+    const buttonFiles = readdirSync(buttonsPath).filter(file => file.endsWith('.ts'));
+
+    for (const filePath of buttonFiles) {
+      const loadedButton = require(join(buttonsPath, filePath));
+
+      if (!(loadedButton.data && loadedButton.execute))
+          return console.log(`[WARN] Command ${filePath} is missing ${loadedButton.data ? 'execute' : 'data'} method.`);
+
+      this.buttons.set(loadedButton.data.customId, loadedButton);
+      console.log('\x1b[32m%s\x1b[0m', `- ${loadedButton.data.customId}`);
     }
   }
 

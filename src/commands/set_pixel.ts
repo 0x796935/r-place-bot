@@ -1,5 +1,5 @@
-import {SlashCommandBuilder, EmbedBuilder, RGBTuple} from '@discordjs/builders';
-import {CommandInteraction} from 'discord.js';
+import {SlashCommandBuilder, EmbedBuilder } from '@discordjs/builders';
+import {ActionRowBuilder, ButtonBuilder, CommandInteraction, ButtonStyle} from 'discord.js';
 // @ts-ignore
 import {getCanvas} from '../utils/canvas';
 
@@ -47,7 +47,7 @@ module.exports = {
         console.log(`Setting pixel at ${pixelX}, ${pixelY} to ${pixelColor}`)
 
         const canvas = await getCanvas(interaction.guildId);
-        const buffer = canvas.fillRectangle(pixelX, pixelY, pixelColor)
+        const buffer = canvas.gifFillRectangle(pixelX, pixelY, pixelColor)
         const canvasSize = canvas.getCanvasSize();
         console.log(`Canvas size: ${canvasSize}`)
 
@@ -63,10 +63,27 @@ module.exports = {
             });
 
         const embed = new EmbedBuilder()
-            .setTitle('Pixel set!')
+            .setTitle('Confirm Pixel Placement')
             .setDescription(`Set pixel at ${pixelX}, ${pixelY} to ${pixelColor}`)
-            .setImage('attachment://canvas.png')
+            .setImage('attachment://canvas.gif')
 
-        return await interaction.reply({embeds: [embed], files: [{name: 'canvas.png', attachment: buffer}]});
+        const messageRow = new ActionRowBuilder<ButtonBuilder>()
+            .addComponents(
+                new ButtonBuilder()
+                    .setCustomId('acceptPixelPlacement')
+                    .setLabel('Accept')
+                    .setStyle(ButtonStyle.Success),
+                new ButtonBuilder()
+                    .setCustomId('denyPixelPlacement')
+                    .setLabel('Deny')
+                    .setStyle(ButtonStyle.Danger),
+            );
+
+        return await interaction.reply({
+            embeds: [embed],
+            files: [{name: 'canvas.gif', attachment: buffer}],
+            components: [messageRow],
+            // ephemeral: true
+        });
     }
 }
